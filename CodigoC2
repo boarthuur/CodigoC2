@@ -1,0 +1,74 @@
+import random
+
+# Definir os parâmetros do problema
+capacidade_mochila = 50  # Capacidade máxima da mochila
+itens = [
+    {"nome": "Item 1", "peso": 10, "valor": 60},
+    {"nome": "Item 2", "peso": 20, "valor": 100},
+    {"nome": "Item 3", "peso": 30, "valor": 120},
+    {"nome": "Item 4", "peso": 40, "valor": 150},
+    {"nome": "Item 5", "peso": 50, "valor": 200}
+]
+tamanho_populacao = 50  # Tamanho da população
+taxa_mutacao = 0.1  # Taxa de mutação
+
+def criar_individuo():
+    return [random.randint(0, 1) for _ in range(len(itens))]
+
+def criar_populacao():
+    return [criar_individuo() for _ in range(tamanho_populacao)]
+
+def avaliar_individuo(individuo):
+    peso_total = 0
+    valor_total = 0
+    for i in range(len(itens)):
+        if individuo[i] == 1:
+            peso_total += itens[i]["peso"]
+            valor_total += itens[i]["valor"]
+    if peso_total > capacidade_mochila:
+        valor_total = 0
+    return valor_total
+
+def selecionar_pais(populacao):
+    pais = []
+    for _ in range(2):
+        individuos = random.sample(populacao, 3)
+        individuos.sort(key=lambda x: avaliar_individuo(x), reverse=True)
+        pais.append(individuos[0])
+    return pais
+
+def cruzar(pai1, pai2):
+    ponto_corte = random.randint(1, len(itens) - 1)
+    filho = pai1[:ponto_corte] + pai2[ponto_corte:]
+    return filho
+
+def mutar(individuo):
+    for i in range(len(itens)):
+        if random.random() < taxa_mutacao:
+            individuo[i] = 1 - individuo[i]
+    return individuo
+
+def algoritmo_genetico():
+    populacao = criar_populacao()
+    for geracao in range(100):
+        nova_populacao = []
+        for _ in range(tamanho_populacao // 2):
+            pai1, pai2 = selecionar_pais(populacao)
+            filho = cruzar(pai1, pai2)
+            filho = mutar(filho)
+            nova_populacao.append(filho)
+        populacao = nova_populacao
+        melhor_individuo = max(populacao, key=lambda x: avaliar_individuo(x))
+        melhor_valor = avaliar_individuo(melhor_individuo)
+        print("Geração:", geracao, "| Melhor valor:", melhor_valor)
+    return melhor_individuo
+
+solucao = algoritmo_genetico()
+melhor_valor = avaliar_individuo(solucao)
+
+print("\nMelhor solução encontrada:")
+for i in range(len(itens)):
+    if solucao[i] == 1:
+        print("Nome:", itens[i]["nome"], "| Peso:", itens[i]["peso"], "| Valor:", itens[i]["valor"])
+
+print("Melhor valor total:", melhor_valor)
