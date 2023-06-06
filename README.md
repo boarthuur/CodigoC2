@@ -1,5 +1,4 @@
 # CodigoC2
-Resposta CodigoC2
 1 - Definir a representação dos indivíduos:
 Para representar a solução do problema da mochila em um cromossomo, você pode usar um vetor binário. Cada elemento do vetor representa a presença ou ausência de um item na mochila. Por exemplo, se houver 5 itens, o cromossomo poderia ser [1, 0, 1, 1, 0], indicando que o primeiro, terceiro e quarto itens estão presentes na mochila.
 
